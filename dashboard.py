@@ -1,5 +1,6 @@
-import base64
+import csv
 import os
+import matplotlib.pyplot as plt
 import streamlit as st
 
 from PIL import Image
@@ -7,21 +8,54 @@ from PIL import Image
 st.set_page_config(page_title="Visual Analytics", page_icon=":guardsman:", layout="wide")
 
 with open('style.css') as f:
- st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html = True)
-
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html = True)
 
 BASE_PATH = os.path.join(os.getcwd(), "results")
-model_list = os.listdir(BASE_PATH)
-default_model = "InceptionResnet"
+MODEL_PATH = os.path.join(BASE_PATH, "Model")
+DATA_PATH = os.path.join(BASE_PATH, "Data")
+IMAGE_PATH = os.path.join(DATA_PATH, "Images")
+CSV_PATH = os.path.join(DATA_PATH, "CSV")
 
-IMG_PATH = os.path.join(os.getcwd(), "data/images/3Blue1Brown/3d6DsjIBzJ4.jpg")
-img = Image.open(IMG_PATH)
+occurence_dict = {}
+with open(os.path.join(CSV_PATH, "distribution.csv"), "r") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        category = row['Category']
+        occurence = int(row['Count'])
+        occurence_dict[category] = occurence
+
+model_list = os.listdir(MODEL_PATH)
+image_list = os.listdir(IMAGE_PATH)
+
+default_model = "InceptionResnet"
 
 tab1, tab2, tab3 = st.tabs(["Data", "Model", "Prediction"])
 
+with tab1:
+    selected_image = st.selectbox("Choose an specific Image", image_list)
+    IMG_PATH = os.path.join(IMAGE_PATH, selected_image)
+    image = Image.open(os.path.join(IMG_PATH, os.listdir(IMG_PATH)[0]))
+    st.markdown(f"<h1>Image for Category: {selected_image}</h1>", unsafe_allow_html=True)
+    st.image(image)
+
+    distribution_list = [(key, value) for key, value in occurence_dict.items()]
+    distribution_list.sort(key=lambda x: x[1], reverse=True)
+    categories = [x[0] for x in distribution_list]
+    occurences = [x[1] for x in distribution_list]
+
+    fig, ax = plt.subplots()
+    ax.bar(categories, occurences)
+    ax.set_xticklabels(categories, rotation=90)
+    ax.set_xlabel("Categories")
+    ax.set_ylabel("Occurences")
+    ax.set_title("Data Distribution")
+    st.pyplot(fig)
+    
+
+
 with tab2:
     selected_model = st.selectbox("Choose your Model", model_list, index=model_list.index(default_model))
-    SELECTED_PATH = os.path.join(BASE_PATH, selected_model)
+    SELECTED_PATH = os.path.join(MODEL_PATH, selected_model)
 
     confusion_matrix = Image.open(os.path.join(SELECTED_PATH, "confusion_matrix.png"))
     structure = Image.open(os.path.join(SELECTED_PATH, "structure.png"))
