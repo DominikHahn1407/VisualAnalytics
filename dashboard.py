@@ -4,25 +4,24 @@ import streamlit as st
 import numpy as np
 
 from PIL import Image
-from keras.models import load_model
-from keras.applications.inception_v3 import preprocess_input
 
 
-with open('le_classes.pkl', 'rb') as f:
-    classes = pickle.load(f)
+BASE_PATH = os.path.join(os.getcwd(), "results")
+model_list = os.listdir(BASE_PATH)
+default_model = "InceptionResnet"
 
 IMG_PATH = os.path.join(os.getcwd(), "data/images/3Blue1Brown/3d6DsjIBzJ4.jpg")
-TARGET_SIZE = (224, 224)
-
-model = load_model("./Inception_0933.h5")
-
 img = Image.open(IMG_PATH)
-rgb_image = img.copy().convert("RGB")
-img_prepared = np.array(rgb_image.resize(TARGET_SIZE), dtype=np.uint8)
-img_prepared = img_prepared[np.newaxis, :, :]
 
-pred = model.predict(img_prepared)
-prediction = classes[np.argmax(pred, axis=1)]
+selected_model = st.selectbox("Choose your Model", model_list, index=model_list.index(default_model))
+SELECTED_PATH = os.path.join(BASE_PATH, selected_model)
 
-st.image(img, caption="Image")
-st.write(prediction)
+confusion_matrix = Image.open(os.path.join(SELECTED_PATH, "confusion_matrix.png"))
+structure = Image.open(os.path.join(SELECTED_PATH, "structure.png"))
+train_acc = Image.open(os.path.join(SELECTED_PATH, "training_acc.png"))
+train_loss = Image.open(os.path.join(SELECTED_PATH, "training_loss.png"))
+
+st.image(confusion_matrix, caption="Confusion Matrix")
+st.image(structure, caption="Model Structure")
+st.image(train_acc, caption="Training Accuracy")
+st.image(train_loss, caption="Training Loss")
