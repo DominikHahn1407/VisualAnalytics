@@ -16,18 +16,19 @@ DATA_PATH = os.path.join(BASE_PATH, "Data")
 IMAGE_PATH = os.path.join(DATA_PATH, "Images")
 CSV_PATH = os.path.join(DATA_PATH, "CSV")
 
+version_selection = st.selectbox("Choose the Dataset", ["v1", "v2"])
+MODEL_PATH = os.path.join(MODEL_PATH, version_selection)
+
+model_list = os.listdir(MODEL_PATH)
+image_list = os.listdir(IMAGE_PATH)
+
 occurence_dict = {}
-with open(os.path.join(CSV_PATH, "distribution.csv"), "r") as f:
+with open(os.path.join(CSV_PATH, f"distribution_{version_selection}.csv"), "r") as f:
     reader = csv.DictReader(f)
     for row in reader:
         category = row['Category']
         occurence = int(row['Count'])
         occurence_dict[category] = occurence
-
-model_list = os.listdir(MODEL_PATH)
-image_list = os.listdir(IMAGE_PATH)
-
-default_model = "InceptionResnet"
 
 tab1, tab2, tab3 = st.tabs(["Data", "Model", "Prediction"])
 
@@ -54,13 +55,13 @@ with tab1:
 
 
 with tab2:
-    selected_model = st.selectbox("Choose your Model", model_list, index=model_list.index(default_model))
+    selected_model = st.selectbox("Choose your Model", model_list)
     SELECTED_PATH = os.path.join(MODEL_PATH, selected_model)
 
     confusion_matrix = Image.open(os.path.join(SELECTED_PATH, "confusion_matrix.png"))
-    structure = Image.open(os.path.join(SELECTED_PATH, "structure.png"))
-    train_acc = Image.open(os.path.join(SELECTED_PATH, "training_acc.png"))
-    train_loss = Image.open(os.path.join(SELECTED_PATH, "training_loss.png"))
+    # structure = Image.open(os.path.join(SELECTED_PATH, "structure.png"))
+    train_acc = Image.open(os.path.join(SELECTED_PATH, "hist_acc.png"))
+    train_loss = Image.open(os.path.join(SELECTED_PATH, "hist_loss.png"))
 
     st.markdown(f"<h1>Analysis of: {selected_model}</h1>", unsafe_allow_html=True)
 
@@ -69,9 +70,9 @@ with tab2:
     with tab2_col1_h1:
         st.write("Confusion Matrix")
         st.image(confusion_matrix, caption="Confusion Matrix")
-    with tab2_col2_h1:
-        st.write("Model Structure")
-        st.image(structure, caption="Model Structure")
+    # with tab2_col2_h1:
+    #     st.write("Model Structure")
+    #     st.image(structure, caption="Model Structure")
 
     tab2_col1_h2, tab2_col2_h2 = st.columns(2)
 
