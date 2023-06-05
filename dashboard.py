@@ -29,6 +29,7 @@ with open(os.path.join(CSV_PATH, f"distribution_{version_selection}.csv"), "r") 
         category = row['Category']
         occurence = int(row['Count'])
         occurence_dict[category] = occurence
+# CSS-Styling für die Navbar
 
 tab1, tab2, tab3 = st.tabs(["Data", "Model", "Prediction"])
 
@@ -56,13 +57,13 @@ with tab1:
     # st.pyplot(fig)
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(f"<h1 style='text-align: center;'>Image for Category: {selected_image}</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='text-align: center;'>Image for Category: <br> {selected_image}</h1>", unsafe_allow_html=True)
         st.image(image)
         st.markdown("<h1 style='text-align: center;'>Augmented Version</h1>", unsafe_allow_html=True)
 
 
     with col2:
-        st.markdown("<h1 style='text-align: center;'>Data Distribution </h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center;'>Data <br> Distribution </h1>", unsafe_allow_html=True)
         st.pyplot(fig) 
 
 
