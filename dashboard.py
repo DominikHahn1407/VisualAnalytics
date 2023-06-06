@@ -16,7 +16,8 @@ DATA_PATH = os.path.join(BASE_PATH, "Data")
 IMAGE_PATH = os.path.join(DATA_PATH, "Images")
 CSV_PATH = os.path.join(DATA_PATH, "CSV")
 
-version_selection = st.selectbox("Choose the Dataset", ["v1", "v2"])
+version_list = ["v1", "v2"]
+version_selection = st.selectbox("Choose the Dataset", version_list)
 MODEL_PATH = os.path.join(MODEL_PATH, version_selection)
 
 model_list = os.listdir(MODEL_PATH)
@@ -37,7 +38,8 @@ with tab1:
     col1, col2 = st.columns(2)
     with col1:
         selected_image = st.selectbox("Choose an specific Image", image_list)
-    
+        selected_value = selected_image.split(" ")[version_list.index(version_selection)]
+
     with col2:
         exotic = st.selectbox("Choose an Augmentation Version", ["Standard", "Exotic"])
 
@@ -61,7 +63,7 @@ with tab1:
     # st.pyplot(fig)
     col1, col2 = st.columns(2)
     with col1:
-        st.markdown(f"<h1 style='text-align: center;'>Image for Category: <br> {selected_image}</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h1 style='text-align: center;'>Image for Category: <br> {selected_value}</h1>", unsafe_allow_html=True)
         st.image(image)
         st.markdown("<h1 style='text-align: center;'>Augmented Version</h1>", unsafe_allow_html=True)
         st.image(augmented_img)
