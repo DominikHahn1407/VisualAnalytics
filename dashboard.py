@@ -101,18 +101,21 @@ with tab3:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("<h1 style='text-align: center;'>Original Bild</h1>", unsafe_allow_html=True)
-        
+        st.image("./results/Data/Images/Automobile,Comedy/IDtHjIe13aU.jpg")
 
     with col2:
         st.markdown("<h1 style='text-align: center;'>Barchart Prediction (Confidences)</h1>", unsafe_allow_html=True)
-
+        # TODO
 
     col1, col2, col3 = st.columns(3)
     with col1:
         st.markdown("<h1 style='text-align: center;'>Grad CAM</h1>", unsafe_allow_html=True)
+        st.image("./results/XAI/grad/v2/inception_1.png")
     with col2:
         st.markdown("<h1 style='text-align: center;'>Lime</h1>", unsafe_allow_html=True)
+        st.image("./results/XAI/lime/v2/vgg_16_2.png")
     with col3:
         st.markdown("<h1 style='text-align: center;'>Shep</h1>", unsafe_allow_html=True)
+        st.image("./results/XAI/shap/v2/custom_0.png")
 
     
