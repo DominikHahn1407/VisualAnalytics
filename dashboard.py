@@ -38,8 +38,12 @@ with tab1:
     with col1:
         selected_image = st.selectbox("Choose an specific Image", image_list)
     
+    with col2:
+        exotic = st.selectbox("Choose an Augmentation Version", ["Standard", "Exotic"])
+
     IMG_PATH = os.path.join(IMAGE_PATH, selected_image)
-    image = Image.open(os.path.join(IMG_PATH, os.listdir(IMG_PATH)[0]))
+    image = Image.open(os.path.join(IMG_PATH, "original.jpg"))
+    augmented_img = Image.open(os.path.join(IMG_PATH, f"{exotic.lower()}.png"))
     # st.markdown(f"<h1>Image for Category: {selected_image}</h1>", unsafe_allow_html=True)
     # st.image(image)
 
@@ -60,7 +64,7 @@ with tab1:
         st.markdown(f"<h1 style='text-align: center;'>Image for Category: <br> {selected_image}</h1>", unsafe_allow_html=True)
         st.image(image)
         st.markdown("<h1 style='text-align: center;'>Augmented Version</h1>", unsafe_allow_html=True)
-
+        st.image(augmented_img)
 
     with col2:
         st.markdown("<h1 style='text-align: center;'>Data <br> Distribution </h1>", unsafe_allow_html=True)
