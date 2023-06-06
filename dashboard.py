@@ -101,7 +101,7 @@ with tab3:
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("<h1 style='text-align: center;'>Original Bild</h1>", unsafe_allow_html=True)
-        st.image("./results/Data/Images/Automobile,Comedy/IDtHjIe13aU.jpg")
+        st.image("./results/Data/Images/Automobile,Comedy/original.jpg")
 
     with col2:
         st.markdown("<h1 style='text-align: center;'>Barchart Prediction (Confidences)</h1>", unsafe_allow_html=True)
