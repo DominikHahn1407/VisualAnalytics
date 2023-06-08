@@ -55,7 +55,7 @@ with tab1:
     occurences = [x[1] for x in distribution_list]
 
     fig, ax = plt.subplots()
-    ax.bar(categories, occurences)
+    ax.bar(categories, occurences, color='#ff4122')
     ax.set_xticklabels(categories, rotation=90)
     ax.set_xlabel("Categories")
     ax.set_ylabel("Occurences")
