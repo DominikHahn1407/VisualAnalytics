@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 
 from PIL import Image
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(page_title="Visual Analytics", page_icon=":guardsman:", layout="wide")
 
 with open('style.css') as f:
@@ -107,7 +107,7 @@ with tab2:
     with tab2_col3:
         st.image(train_acc, caption="Training Accuracy")
     with tab2_col4:
-        st.image(model_vis, caption="Vizualized Modelstructure")
+        st.image(model_vis, width=None,  caption="Vizualized Modelstructure")
 
 
     # confusion_matrix = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_cm.png"))
