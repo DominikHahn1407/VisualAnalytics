@@ -1,5 +1,6 @@
 import csv
 import os
+import pickle
 import matplotlib.pyplot as plt
 import streamlit as st
 
@@ -10,9 +11,15 @@ st.set_page_config(page_title="Visual Analytics", page_icon=":guardsman:", layou
 with open('style.css') as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html = True)
 
+MODEL_LIST = ["Custom", "VGG_16", "Inception", "ResNet", "Xception"]
+
 BASE_PATH = os.path.join(os.getcwd(), "results")
-MODEL_PATH = os.path.join(BASE_PATH, "Model")
+
+CLASS_ACC_PATH = os.path.join(BASE_PATH, "Class_Accuracy")
 DATA_PATH = os.path.join(BASE_PATH, "Data")
+MODEL_PATH = os.path.join(BASE_PATH, "Model")
+XAI_PATH = os.path.join(BASE_PATH, "XAI")
+
 IMAGE_PATH = os.path.join(DATA_PATH, "Images")
 CSV_PATH = os.path.join(DATA_PATH, "CSV")
 
@@ -20,7 +27,6 @@ version_list = ["v1", "v2"]
 version_selection = st.selectbox("Choose the Dataset", version_list)
 MODEL_PATH = os.path.join(MODEL_PATH, version_selection)
 
-model_list = os.listdir(MODEL_PATH)
 image_list = os.listdir(IMAGE_PATH)
 
 occurence_dict = {}
@@ -30,6 +36,18 @@ with open(os.path.join(CSV_PATH, f"distribution_{version_selection}.csv"), "r") 
         category = row['Category']
         occurence = int(row['Count'])
         occurence_dict[category] = occurence
+
+with open("accuracies_v1.pkl", "rb") as f:
+    accuracies_v1 = pickle.load(f)
+
+with open("accuracies_v2.pkl", "rb") as f:
+    accuracies_v2 = pickle.load(f)
+
+with open("predictions.pkl", "rb") as f:
+    all_predictions = pickle.load(f)
+
+accuracy_dict = [accuracies_v1, accuracies_v2]
+
 # CSS-Styling für die Navbar
 
 tab1, tab2, tab3 = st.tabs(["Data", "Model", "Prediction"])
@@ -74,20 +92,19 @@ with tab1:
 
 
 with tab2:
-    selected_model = st.selectbox("Choose your Model", model_list)
-    SELECTED_PATH = os.path.join(MODEL_PATH, selected_model)
+    selected_model = st.selectbox("Choose your Model", MODEL_LIST)
 
-    confusion_matrix = Image.open(os.path.join(SELECTED_PATH, "confusion_matrix.png"))
+    confusion_matrix = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_cm.png"))
     # structure = Image.open(os.path.join(SELECTED_PATH, "structure.png"))
-    train_acc = Image.open(os.path.join(SELECTED_PATH, "hist_acc.png"))
-    train_loss = Image.open(os.path.join(SELECTED_PATH, "hist_loss.png"))
+    train_acc = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_acc.png"))
+    train_loss = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_loss.png"))
 
-    st.markdown(f"<h1>Analysis of: {selected_model}</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1>Analysis of: {selected_model}-Model</h1>", unsafe_allow_html=True)
 
     tab2_col1_h1, tab2_col2_h1 = st.columns(2)
 
     with tab2_col1_h1:
-        st.write("Confusion Matrix")
+        # st.write("Confusion Matrix")
         st.image(confusion_matrix, caption="Confusion Matrix")
         st.markdown("<h1 style='text-align: center;'>Visualisierung des Models</h1>", unsafe_allow_html=True)
     # with tab2_col2_h1:
@@ -97,31 +114,88 @@ with tab2:
     tab2_col1_h2, tab2_col2_h2 = st.columns(2)
 
     with tab2_col1_h2:
-        st.write("Training Accuracy")
+        # st.write("Training Accuracy")
         st.image(train_acc, caption="Training Accuracy")
     with tab2_col2_h2:
-        st.write("Training Loss")
+        # st.write("Training Loss")
         st.image(train_loss, caption="Training Loss")
 
 with tab3:
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("<h1 style='text-align: center;'>Original Bild</h1>", unsafe_allow_html=True)
-        st.image("./results/Data/Images/Automobile,Comedy/original.jpg")
+    col1_h1, col2_h1 = st.columns(2)
+    with col1_h1:
+        # As folder structure is not the same as image training/saving structure, we need this little workaround
+        value_list = [1, 4, 3, 0, 2]
+        image_list_prepared = []
+        for index, item in enumerate(value_list):
+            image_list_prepared.append(f"{item} {image_list[index]}")
 
-    with col2:
-        st.markdown("<h1 style='text-align: center;'>Barchart Prediction (Confidences)</h1>", unsafe_allow_html=True)
-        # TODO
+        image_list_prepared.sort()
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("<h1 style='text-align: center;'>Grad CAM</h1>", unsafe_allow_html=True)
-        st.image("./results/XAI/grad/v2/inception_1.png")
-    with col2:
-        st.markdown("<h1 style='text-align: center;'>Lime</h1>", unsafe_allow_html=True)
-        st.image("./results/XAI/lime/v2/vgg_16_2.png")
-    with col3:
-        st.markdown("<h1 style='text-align: center;'>Shep</h1>", unsafe_allow_html=True)
-        st.image("./results/XAI/shap/v2/custom_0.png")
+        selected_image_pred = st.selectbox("Choose an specific Image", image_list_prepared, key="selected_image_pred")
+        selected_image_index = selected_image_pred[0]
+        selected_image_pred = selected_image_pred[2:]
+        selected_value = selected_image_pred.split(" ")[version_list.index(version_selection)]
+
+    with col2_h1:        
+        selected_model_pred = st.selectbox("Choose your Model", MODEL_LIST, key="selected_model_pred")
+
+    col1_h2, col2_h2, col3_h2 = st.columns(3)
+    with col1_h2:
+        st.markdown("<h6 style='text-align: center;'>Original Image</h6>", unsafe_allow_html=True)
+        IMG_PATH = os.path.join(IMAGE_PATH, selected_image_pred)
+        image = Image.open(os.path.join(IMG_PATH, "original.jpg"))
+        st.image(image)
+
+        grad_value = f"{selected_model_pred.lower()}_{selected_image_index}.png"
+        grad_path = os.path.join(XAI_PATH, "grad", version_selection, grad_value)
+        grad_image = Image.open(grad_path)
+
+        st.markdown("<h6 style='text-align: center;'>Grad CAM</h6>", unsafe_allow_html=True)
+        st.image(grad_image)
+
+    with col2_h2:
+        model_value = None
+        if selected_model_pred == "Inception":
+            model_value = "inception_v3"
+        elif selected_model_pred == "ResNet":
+            model_value = "resnet_50"
+        else:
+            model_value = selected_model_pred.lower()
+
+        accuracy_dict = accuracy_dict[version_list.index(version_selection)]
+        accuracies = accuracy_dict[model_value]        
+        
+        prediction_dict = all_predictions[version_list.index(version_selection)]
+        predictions = prediction_dict[selected_model_pred.lower()]
+        prediction = predictions[int(selected_image_index)]
+        prediction = prediction[0].upper() + prediction[1:]
+
+        st.markdown(f"<h3 style='text-align: center;'>Prediction: {prediction}", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='text-align: center;'>True Label: {selected_value}", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='text-align: center;'>Accuracy: {accuracies[0]}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='text-align: center;'>Weighted Accuracy: {accuracies[1]}</h3>", unsafe_allow_html=True)
+
+        lime_value = f"{selected_model_pred.lower()}_{selected_image_index}.png"
+        lime_path = os.path.join(XAI_PATH, "lime", version_selection, lime_value)
+        lime_image = Image.open(lime_path)
+
+        st.markdown("<h6 style='text-align: center;'>Lime</h6>", unsafe_allow_html=True)
+        st.image(lime_image)
+
+    with col3_h2:
+        class_acc_value = f"{selected_model_pred.lower()}.png"
+        class_acc_path = os.path.join(CLASS_ACC_PATH, version_selection, class_acc_value)
+        class_acc_image = Image.open(class_acc_path)
+
+        shap_value = f"{selected_model_pred.lower()}_{selected_image_index}.png"
+        shap_path = os.path.join(XAI_PATH, "shap", version_selection, shap_value)
+        shap_image = Image.open(shap_path)
+
+        st.markdown("<h6 style='text-align: center;'>Class Accuracies</h6>", unsafe_allow_html=True)
+        st.image(class_acc_image)
+
+        st.markdown("<h6 style='text-align: center;'>Shapley Values</h6>", unsafe_allow_html=True)
+        st.image(shap_image)
+   
 
     
