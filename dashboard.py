@@ -93,32 +93,47 @@ with tab1:
 
 with tab2:
     selected_model = st.selectbox("Choose your Model", MODEL_LIST)
-
+    tab2_col1, tab2_col2, tab2_col3, tab2_col4 = st.columns(4)
+    
     confusion_matrix = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_cm.png"))
-    # structure = Image.open(os.path.join(SELECTED_PATH, "structure.png"))
     train_acc = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_acc.png"))
     train_loss = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_loss.png"))
-
-    st.markdown(f"<h1>Analysis of: {selected_model}-Model</h1>", unsafe_allow_html=True)
-
-    tab2_col1_h1, tab2_col2_h1 = st.columns(2)
-
-    with tab2_col1_h1:
-        # st.write("Confusion Matrix")
+    model_vis = Image.open(os.path.join(MODEL_PATH,  f"{selected_model.lower()}_model.png"))
+    with tab2_col1:
+        # st.markdown("<h1 style='text-align: center;'>Visualisierung des Models</h1>", unsafe_allow_html=True)
         st.image(confusion_matrix, caption="Confusion Matrix")
-        st.markdown("<h1 style='text-align: center;'>Visualisierung des Models</h1>", unsafe_allow_html=True)
+    with tab2_col2:
+        st.image(train_loss, caption="Training Loss")
+    with tab2_col3:
+        st.image(train_acc, caption="Training Accuracy")
+    with tab2_col4:
+        st.image(model_vis, caption="Vizualized Modelstructure")
+
+
+    # confusion_matrix = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_cm.png"))
+    # structure = Image.open(os.path.join(SELECTED_PATH, "structure.png"))
+    # train_acc = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_acc.png"))
+    # train_loss = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_loss.png"))
+
+    # st.markdown(f"<h1>Analysis of: {selected_model}-Model</h1>", unsafe_allow_html=True)
+
+    # tab2_col1_h1, tab2_col2_h1 = st.columns(2)
+
+    # with tab2_col1_h1:
+        # st.write("Confusion Matrix")
+        
     # with tab2_col2_h1:
     #     st.write("Model Structure")
     #     st.image(structure, caption="Model Structure")
 
-    tab2_col1_h2, tab2_col2_h2 = st.columns(2)
+    # tab2_col1_h2, tab2_col2_h2 = st.columns(2)
 
-    with tab2_col1_h2:
-        # st.write("Training Accuracy")
-        st.image(train_acc, caption="Training Accuracy")
-    with tab2_col2_h2:
-        # st.write("Training Loss")
-        st.image(train_loss, caption="Training Loss")
+    # with tab2_col1_h2:
+    #     # st.write("Training Accuracy")
+    #     st.image(train_acc, caption="Training Accuracy")
+    # with tab2_col2_h2:
+    #     # st.write("Training Loss")
+    #     st.image(train_loss, caption="Training Loss")
 
 with tab3:
     col1_h1, col2_h1 = st.columns(2)
