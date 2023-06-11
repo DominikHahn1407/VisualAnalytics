@@ -63,51 +63,89 @@ with tab1:
 
     IMG_PATH = os.path.join(IMAGE_PATH, selected_image)
     image = Image.open(os.path.join(IMG_PATH, "original.jpg"))
+    image = image.resize((640,500))
     augmented_img = Image.open(os.path.join(IMG_PATH, f"{exotic.lower()}.png"))
+    augmented_img = augmented_img.resize((640,500))
     # st.markdown(f"<h1>Image for Category: {selected_image}</h1>", unsafe_allow_html=True)
     # st.image(image)
-
     distribution_list = [(key, value) for key, value in occurence_dict.items()]
     distribution_list.sort(key=lambda x: x[1], reverse=True)
     categories = [x[0] for x in distribution_list]
     occurences = [x[1] for x in distribution_list]
 
     fig, ax = plt.subplots()
+
     ax.bar(categories, occurences, color='#ff4122')
     ax.set_xticklabels(categories, rotation=90)
     ax.set_xlabel("Categories")
     ax.set_ylabel("Occurences")
+    plt.tight_layout()
+
+    DIAGRAMM_PATH= os.path.join(MODEL_PATH, "occurence.png")
+    plt.savefig(DIAGRAMM_PATH)
+    plt.close()
+    occurence = Image.open(DIAGRAMM_PATH)
+    occurence = occurence.resize((640,500))
     # ax.set_title("Data Distribution")
     # st.pyplot(fig)
-    col1, col2 = st.columns(2)
+
+    col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown(f"<h1 style='text-align: center;'>Image for Category: <br> {selected_value}</h1>", unsafe_allow_html=True)
+        st.markdown(f"<h5 style='text-align: center;'>Image for Category:  {selected_value}</h5>", unsafe_allow_html=True)
         st.image(image)
-        st.markdown("<h1 style='text-align: center;'>Augmented Version</h1>", unsafe_allow_html=True)
-        st.image(augmented_img)
 
     with col2:
-        st.markdown("<h1 style='text-align: center;'>Data <br> Distribution </h1>", unsafe_allow_html=True)
-        st.pyplot(fig) 
-
+        st.markdown("<h5 style='text-align: center;'>Data Distribution </h5>", unsafe_allow_html=True)
+        st.image(occurence)
+        
+    with col3:
+        st.markdown("<h5 style='text-align: center;'>Augmented Version</h5>", unsafe_allow_html=True)
+        st.image(augmented_img, use_column_width="always")
+        
+        
 
 with tab2:
     selected_model = st.selectbox("Choose your Model", MODEL_LIST)
-    tab2_col1, tab2_col2, tab2_col3, tab2_col4 = st.columns(4)
-    
     confusion_matrix = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_cm.png"))
+    confusion_matrix = confusion_matrix.resize((651, 580))
     train_acc = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_acc.png"))
+    train_acc = train_acc.resize((651, 580))
     train_loss = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_loss.png"))
+    train_loss = train_loss.resize((651, 580))
     model_vis = Image.open(os.path.join(MODEL_PATH,  f"{selected_model.lower()}_model.png"))
-    with tab2_col1:
-        # st.markdown("<h1 style='text-align: center;'>Visualisierung des Models</h1>", unsafe_allow_html=True)
-        st.image(confusion_matrix, caption="Confusion Matrix")
-    with tab2_col2:
-        st.image(train_loss, caption="Training Loss")
-    with tab2_col3:
-        st.image(train_acc, caption="Training Accuracy")
-    with tab2_col4:
-        st.image(model_vis, width=None,  caption="Vizualized Modelstructure")
+    
+
+
+    if selected_model == "Custom" or selected_model == "VGG_16":
+        model_vis = model_vis.resize((651, 580))
+        tab2_col1, tab2_col2, tab2_col3, tab2_col4 = st.columns(4)
+    
+        with tab2_col1:
+            st.markdown("<h5 style='text-align: center;'> Confusion Matrix </h5>", unsafe_allow_html=True)
+            st.image(confusion_matrix)
+        with tab2_col2:
+            st.markdown("<h5 style='text-align: center;'>Training Loss </h5>", unsafe_allow_html=True)
+            st.image(train_loss)
+        with tab2_col3:
+            st.markdown("<h5 style='text-align: center;'>Training Accuracy </h5>", unsafe_allow_html=True)
+            st.image(train_acc)
+        with tab2_col4:
+            st.markdown("<h5 style='text-align: center;'>Vizualized Modelstructure </h5>", unsafe_allow_html=True)
+            st.image(model_vis)
+    else:
+        tab2_col1, tab2_col2, tab2_col3 = st.columns(3)
+        with tab2_col1:
+            st.markdown("<h5 style='text-align: center;'> Confusion Matrix </h5>", unsafe_allow_html=True)
+            st.image(confusion_matrix)
+        with tab2_col2:
+            st.markdown("<h5 style='text-align: center;'>Training Loss </h5>", unsafe_allow_html=True)
+            st.image(train_loss)
+        with tab2_col3:
+            st.markdown("<h5 style='text-align: center;'>Training Accuracy </h5>", unsafe_allow_html=True)
+            st.image(train_acc)
+
+        st.markdown("<h5 style='text-align: center;'>Vizualized Modelstructure </h5>", unsafe_allow_html=True)
+        st.image(model_vis, width=1920,  caption="Vizualized Modelstructure")
 
 
     # confusion_matrix = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_cm.png"))
@@ -156,7 +194,7 @@ with tab3:
 
     col1_h2, col2_h2, col3_h2 = st.columns(3)
     with col1_h2:
-        st.markdown("<h6 style='text-align: center;'>Original Image</h6>", unsafe_allow_html=True)
+        st.markdown("<h5 style='text-align: center;'>Original Image</h5>", unsafe_allow_html=True)
         IMG_PATH = os.path.join(IMAGE_PATH, selected_image_pred)
         image = Image.open(os.path.join(IMG_PATH, "original.jpg"))
         st.image(image)
@@ -165,8 +203,8 @@ with tab3:
         grad_path = os.path.join(XAI_PATH, "grad", version_selection, grad_value)
         grad_image = Image.open(grad_path)
 
-        st.markdown("<h6 style='text-align: center;'>Grad CAM</h6>", unsafe_allow_html=True)
-        st.image(grad_image)
+        st.markdown("<h5 style='text-align: center;'>Grad CAM</h5>", unsafe_allow_html=True)
+        st.image(grad_image, use_column_width="always")
 
     with col2_h2:
         model_value = None
@@ -184,17 +222,20 @@ with tab3:
         predictions = prediction_dict[selected_model_pred.lower()]
         prediction = predictions[int(selected_image_index)]
         prediction = prediction[0].upper() + prediction[1:]
-
+        
+        st.markdown("<h5 style='text-align: center; margin-bottom: 80px'> </h5>", unsafe_allow_html=True)
         st.markdown(f"<h3 style='text-align: center;'>Prediction: {prediction}", unsafe_allow_html=True)
         st.markdown(f"<h3 style='text-align: center;'>True Label: {selected_value}", unsafe_allow_html=True)
         st.markdown(f"<h3 style='text-align: center;'>Accuracy: {accuracies[0]}</h3>", unsafe_allow_html=True)
-        st.markdown(f"<h3 style='text-align: center;'>Weighted Accuracy: {accuracies[1]}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<h3 style='text-align: center; margin-bottom: 86px'>Weighted Accuracy: {accuracies[1]}</h3>", unsafe_allow_html=True)
+
+
 
         lime_value = f"{selected_model_pred.lower()}_{selected_image_index}.png"
         lime_path = os.path.join(XAI_PATH, "lime", version_selection, lime_value)
         lime_image = Image.open(lime_path)
 
-        st.markdown("<h6 style='text-align: center;'>Lime</h6>", unsafe_allow_html=True)
+        st.markdown("<h5 style='text-align: center;'>Lime</h5>", unsafe_allow_html=True)
         st.image(lime_image)
 
     with col3_h2:
@@ -206,10 +247,10 @@ with tab3:
         shap_path = os.path.join(XAI_PATH, "shap", version_selection, shap_value)
         shap_image = Image.open(shap_path)
 
-        st.markdown("<h6 style='text-align: center;'>Class Accuracies</h6>", unsafe_allow_html=True)
-        st.image(class_acc_image)
+        st.markdown("<h5 style='text-align: center;'>Class Accuracies</h5>", unsafe_allow_html=True)
+        st.image(class_acc_image, use_column_width="always")
 
-        st.markdown("<h6 style='text-align: center;'>Shapley Values</h6>", unsafe_allow_html=True)
+        st.markdown("<h5 style='text-align: center;'>Shapley Values</h5>", unsafe_allow_html=True)
         st.image(shap_image)
    
 
