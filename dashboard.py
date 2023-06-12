@@ -123,6 +123,9 @@ with tab2:
         with tab2_col1:
             st.markdown("<h5 style='text-align: center;'> Confusion Matrix </h5>", unsafe_allow_html=True)
             st.image(confusion_matrix)
+            
+
+
         with tab2_col2:
             st.markdown("<h5 style='text-align: center;'>Training Loss </h5>", unsafe_allow_html=True)
             st.image(train_loss)
@@ -145,7 +148,7 @@ with tab2:
             st.image(train_acc)
 
         st.markdown("<h5 style='text-align: center;'>Vizualized Modelstructure </h5>", unsafe_allow_html=True)
-        st.image(model_vis, width=1920,  caption="Vizualized Modelstructure")
+        st.image(model_vis, width=1920)
 
 
     # confusion_matrix = Image.open(os.path.join(MODEL_PATH, f"{selected_model.lower()}_cm.png"))
@@ -247,11 +250,14 @@ with tab3:
         shap_path = os.path.join(XAI_PATH, "shap", version_selection, shap_value)
         shap_image = Image.open(shap_path)
 
-        st.markdown("<h5 style='text-align: center;'>Class Accuracies</h5>", unsafe_allow_html=True)
-        st.image(class_acc_image, use_column_width="always")
-
         st.markdown("<h5 style='text-align: center;'>Shapley Values</h5>", unsafe_allow_html=True)
         st.image(shap_image)
+        st.markdown("<h5 style='text-align: center; margin-bottom: 128px'> </h5>", unsafe_allow_html=True)
+
+        st.markdown("<h5 style='text-align: center;'>Class Accuracies</h5>", unsafe_allow_html=True)
+        st.image(class_acc_image, use_column_width="always")
+        
+
    
 
     
