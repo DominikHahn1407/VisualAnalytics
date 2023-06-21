@@ -143,25 +143,25 @@ with tab2:
             st.image(train_loss.resize((651, 580)))
         with tab2_col3:
             st.markdown("<h5 style='text-align: center;'>Training Accuracy </h5>", unsafe_allow_html=True)
-            st.image(train_acc.resize((651, 580)))
+            st.image(train_acc.resize((651, 580)),use_column_width="auto")
         with tab2_col4:
             st.markdown("<h5 style='text-align: center;'>Vizualized Modelstructure </h5>", unsafe_allow_html=True)
-            st.image(model_vis.resize((651, 580)))
+            st.image(model_vis.resize((651, 580)), use_column_width="auto")
     # For the other models, the structure should be displayed beneath the other images
     else:
         tab2_col1, tab2_col2, tab2_col3 = st.columns(3)
         with tab2_col1:
             st.markdown("<h5 style='text-align: center;'> Confusion Matrix </h5>", unsafe_allow_html=True)
-            st.image(confusion_matrix.resize((651,300)))
+            st.image(confusion_matrix.resize((1900, 1000)), use_column_width="auto")
         with tab2_col2:
             st.markdown("<h5 style='text-align: center;'>Training Loss </h5>", unsafe_allow_html=True)
-            st.image(train_loss.resize((651,300)))
+            st.image(train_loss.resize((1900, 1000)), use_column_width="auto")
         with tab2_col3:
             st.markdown("<h5 style='text-align: center;'>Training Accuracy </h5>", unsafe_allow_html=True)
-            st.image(train_acc.resize((651,300)))
+            st.image(train_acc.resize((1900, 1000)), use_column_width="auto")
 
         st.markdown("<h5 style='text-align: center;'>Vizualized Modelstructure </h5>", unsafe_allow_html=True)
-        st.image(model_vis)
+        st.image(model_vis, use_column_width=True)
 
 
 with tab3:
