@@ -228,7 +228,7 @@ with tab3:
         # Display the mean accuracy of the model on the test set
         st.markdown(f"<h4 style='text-align: center;'>Accuracy: {accuracies[0]}</h4>", unsafe_allow_html=True)
         # Display the weighted accuracy of the model on the test set
-        st.markdown(f"<h4 style='text-align: center; margin-bottom: 29px'>Weighted Accuracy: {accuracies[1]}</h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='text-align: center; margin-bottom: 7%'>Weighted Accuracy: {accuracies[1]}</h4>", unsafe_allow_html=True)
 
         # load in lime images for the chosen model on the specific image
         lime_value = f"{selected_model_pred.lower()}_{selected_image_index}.png"
