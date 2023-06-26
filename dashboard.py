@@ -191,7 +191,7 @@ with tab3:
         st.markdown("<h5 style='text-align: center;'>Original Image</h5>", unsafe_allow_html=True)
         IMG_PATH = os.path.join(IMAGE_PATH, selected_image_pred)
         image = Image.open(os.path.join(IMG_PATH, "original.jpg"))
-        st.image(image.resize((651,270)))
+        st.image(image.resize((950, 500)), use_column_width="auto")
 
         # Load in the grad cam image for the model for the specific input image
         grad_value = f"{selected_model_pred.lower()}_{selected_image_index}.png"
@@ -199,7 +199,7 @@ with tab3:
         grad_image = Image.open(grad_path)
 
         st.markdown("<h5 style='text-align: center;'>Grad CAM</h5>", unsafe_allow_html=True)
-        st.image(grad_image.resize((651,270)))
+        st.image(grad_image.resize((950, 500)), use_column_width="auto")
 
     with col2_h2:
         model_value = None
@@ -220,7 +220,7 @@ with tab3:
         prediction = predictions[int(selected_image_index)]
         prediction = prediction[0].upper() + prediction[1:]
         
-        st.markdown("<h5 style='text-align: center; margin-bottom: 15px'> </h5>", unsafe_allow_html=True)
+        st.markdown("<h5 style='text-align: center; margin-bottom: 10%'> </h5>", unsafe_allow_html=True)
         # Display the prediction of the model for the specific image
         st.markdown(f"<h4 style='text-align: center;'>Prediction: {prediction}", unsafe_allow_html=True)
         # Display the True Label of the chosen image
@@ -228,7 +228,7 @@ with tab3:
         # Display the mean accuracy of the model on the test set
         st.markdown(f"<h4 style='text-align: center;'>Accuracy: {accuracies[0]}</h4>", unsafe_allow_html=True)
         # Display the weighted accuracy of the model on the test set
-        st.markdown(f"<h4 style='text-align: center; margin-bottom: 7%'>Weighted Accuracy: {accuracies[1]}</h4>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='text-align: center; margin-bottom: 10%'>Weighted Accuracy: {accuracies[1]}</h4>", unsafe_allow_html=True)
 
         # load in lime images for the chosen model on the specific image
         lime_value = f"{selected_model_pred.lower()}_{selected_image_index}.png"
@@ -236,7 +236,7 @@ with tab3:
         lime_image = Image.open(lime_path)
 
         st.markdown("<h5 style='text-align: center;'>Lime</h5>", unsafe_allow_html=True)
-        st.image(lime_image.resize((651,270)))
+        st.image(lime_image.resize((950, 500)), use_column_width="auto")
 
     with col3_h2:
         # load in the class accuracies for the specific model on the test set
@@ -250,10 +250,10 @@ with tab3:
         shap_image = Image.open(shap_path)
 
         st.markdown("<h5 style='text-align: center;'>Class Accuracies</h5>", unsafe_allow_html=True)
-        st.image(class_acc_image.resize((651,270)))
+        st.image(class_acc_image.resize((950, 500)), use_column_width="auto")
 
         st.markdown("<h5 style='text-align: center;'>Shapley Values</h5>", unsafe_allow_html=True)
-        st.image(shap_image.resize((651,270)))
+        st.image(shap_image.resize((950, 500)), use_column_width="auto")
 
         
 
